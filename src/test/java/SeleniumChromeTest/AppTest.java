@@ -76,7 +76,7 @@ public class AppTest {
   }
 
   @Test
-  public void removeItemInCart() throws InterruptedException{
+  public void removeItemInCartTest() throws InterruptedException{
     //takes care of nodes 2,29,30,31
     logIn(driver);
     //takes care of nodes 4, 5, 6
@@ -100,6 +100,10 @@ public class AppTest {
     //takes care of node 12
     enterShippingInformation();
     driver.findElement(By.id("displayShippingAddress")).click();
+  }
+  @Test
+  public void registerAccountTest(){
+    registerAccount();
   }
 
 
@@ -146,6 +150,7 @@ public class AppTest {
     wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
     retryingFindClick(driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
     addtoCart();
+    enterShippingInformation();
     guestCheckout();
   }
 
@@ -159,6 +164,7 @@ public class AppTest {
     retryingFindClick(driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
     //to ensure that something is in the cart
     addtoCart();
+    enterShippingInformation();
     checkoutWithPaypalAccount();
   }
 
@@ -259,6 +265,7 @@ public class AppTest {
     //go back to node 1 and start test
     retryingFindClick(driver.findElement(By.linkText("Home")));
     driver.findElement(By.linkText("Cart")).click();
+    enterShippingInformation();
     checkoutWithPaypalAccount();
     //resume test at node 1, 6, 9 ...
     wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
@@ -267,79 +274,271 @@ public class AppTest {
     notDoneShopping();
     driver.navigate().refresh();
     logIn(driver);
+  }
+
+  @Test
+  public void edgePairTestPath3(){
+    //test path is [1,6,1,3,24,25,26,27,28]
+    
+    WebDriverWait wait = new WebDriverWait(driver,20);
+    wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
+    retryingFindClick(driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    //esnure that you are logged out 
+    String bodyText = driver.findElement(By.tagName("body")).getText();
+    if(bodyText.contains("LOG OUT")) {
+        retryingFindClick(driver.findElement(By.id("Logout")));
+        driver.get("http://localhost/cosc612projAkeeri/homeLandingPage.php");
+      } 
+      //resume test at node 1, 3, ...
+    registerAccount();
+  }
+
+  @Test
+  public void edgePairTestPath4() throws InterruptedException {
+    //test path is [1,9,12,13,14,15,16,17,19,32,33,34,1,6,1,4,5,6,9,10,9,1,4,5,6,7,8,9,10,9,10,9,12,13,14,15,16,17,19,32,33,34,1]
+    //ensure that you are logged in and stuff is in the cart 
+    logIn(driver);
+    searchForItem();
+    addtoCart();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    //start test 
+    driver.findElement(By.linkText("Cart")).click();
+    enterShippingInformation();
+    guestCheckout();
+    WebDriverWait wait = new WebDriverWait(driver,20);
+    wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
+    retryingFindClick(driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    searchForItem();
+    driver.findElement(By.linkText("Cart")).click();
+    removeItemInCart();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    searchForItem();
+    addtoCart();
+    removeItemInCart();
+    removeItemInCart();
+    enterShippingInformation();
+    guestCheckout();
     //test to ensure that we actually landed back on node 1 (the home page)
     String bodyText = driver.findElement(By.tagName("body")).getText();
     Assert.assertTrue("Text not found!", bodyText.contains("Search Results:") || bodyText.contains(("Our top products:")));
   }
 
   @Test
-  public void edgePairTestPath3(){
-    //test path is [1,6,1,3,24,25,26,27,28]
-  }
-
-  @Test
-  public void edgePairTestPath4(){
-    //test path is [1,9,12,13,14,15,16,17,19,32,33,34,1,6,1,4,5,6,9,10,9,1,4,5,6,7,8,9,10,9,10,9,12,13,14,15,16,17,19,32,33,34,1]
-  }
-
-  @Test
   public void edgePairTestPath5(){
     //test path is [1,2,29,30,31,1,6,1,6,7,8,9,1,6,9,1,9,12,13,14,15,16,17,19,32,33,34,1,2,29,30,31,1]
+    logIn(driver);
+    WebDriverWait wait = new WebDriverWait(driver,20);
+    wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
+    retryingFindClick(driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
+    retryingFindClick(driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
+    addtoCart();
+    guestCheckout();
+    logIn(driver);
   }
 
   @Test
   public void edgePairTestPath6(){
     //test path is [1,9,12,13,14,15,16,17,19,32,33,34,1,9,1,9,1,6,1,2,29,30,31,1,2,29,30,31,1]
+    //ensure that you are logged in and stuff is in the cart 
+    logIn(driver);
+    searchForItem();
+    addtoCart();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    //start test 
+    driver.findElement(By.linkText("Cart")).click();
+    enterShippingInformation();
+    guestCheckout();
+    //esnure to log in in order to get to cart
+    logIn(driver);
+    //resume test at 1, 9, 1, ...
+    driver.findElement(By.linkText("Cart")).click();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    driver.findElement(By.linkText("Cart")).click();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    WebDriverWait wait = new WebDriverWait(driver,20);
+    wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
+    retryingFindClick(driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
+    logIn(driver);
   }
 
   @Test
   public void edgePairTestPath7(){
     //test path is [1,2,29,30,31,1,9,10,9,11,1,4,5,6,1,9,1,2,29,30,31,1]
+    //ensure that you are logged in and stuff is in the cart 
+    logIn(driver);
+    searchForItem();
+    addtoCart();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    //start test
+    logIn(driver);
+    driver.findElement(By.linkText("Cart")).click();
+    removeItemInCart();
+    notDoneShopping();
+    searchForItem();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    driver.findElement(By.linkText("Cart")).click();
+    logIn(driver);
   }
 
   @Test
-  public void edgePairTestPath8(){
+  public void edgePairTestPath8() throws InterruptedException {
     //test path is [1,9,12,13,14,15,16,17,18,20,21,35,22,23,1,9,1,9,11,1,6,9,12,13,14,15,16,17,18,20,21,35,22,23,1,2,29,30,31,1]
+    //ensure that you are logged in and stuff is in the cart 
+    logIn(driver);
+    searchForItem();
+    addtoCart();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    //start test
+    driver.findElement(By.linkText("Cart")).click();
+    checkoutWithPaypalAccount();
+    //pause test to log in to ensure that we can get to the cart
+    tearDown();
+    setUp();
+    logIn(driver);
+    //resume test at 1, 9, 1 ...
+    driver.findElement(By.linkText("Cart")).click();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    driver.findElement(By.linkText("Cart")).click();
+    notDoneShopping();
+    WebDriverWait wait = new WebDriverWait(driver,20);
+    wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
+    retryingFindClick(driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
+    driver.findElement(By.linkText("Cart")).click();
+    enterShippingInformation();
+    checkoutWithPaypalAccount();
+    logIn(driver);
   }
 
   @Test
   public void edgePairTestPath9(){
     //test path is [1,6,7,8,9,12,13,14,15,16,17,19,32,33,34,1]
+    //need to be logged in to get to cart
+    logIn(driver);
+    //start test
+    WebDriverWait wait = new WebDriverWait(driver,20);
+    wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
+    retryingFindClick(driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/div/a")));
+    addtoCart();
+    enterShippingInformation();
+    guestCheckout();
   }
 
   @Test
   public void edgePairTestPath10(){
     //test path is [1,9,11,1,3,24,25,26,27,28]
+    //need to be logged in to get to cart
+    logIn(driver);
+    //start test
+    driver.findElement(By.linkText("Cart")).click();
+    notDoneShopping();
+    //ensure that you are logged out to be able to register
+    String bodyText = driver.findElement(By.tagName("body")).getText();
+    if(bodyText.contains("LOG OUT")) {
+        retryingFindClick(driver.findElement(By.id("Logout")));
+        driver.get("http://localhost/cosc612projAkeeri/homeLandingPage.php");
+      } 
+    registerAccount();
   }
 
   @Test
   public void edgePairTestPath11(){
     //test path is [1,9,12,13,14,15,16,17,18,20,21,35,22,23,1,4,5,6,1]
+    //ensure that you are logged in and stuff is in the cart 
+    logIn(driver);
+    searchForItem();
+    addtoCart();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    //start test
+    driver.findElement(By.linkText("Cart")).click();
+    enterShippingInformation();
+    checkoutWithPaypalAccount();
+    searchForItem();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
   }
 
   @Test
   public void edgePairTestPath12(){
     //test path is [1,9,12,13,14,15,16,17,18,20,21,35,22,23,1,3,24,25,26,27,28]
+    //ensure that you are logged in and stuff is in the cart 
+    logIn(driver);
+    searchForItem();
+    addtoCart();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    //start test
+    driver.findElement(By.linkText("Cart")).click();
+    enterShippingInformation();
+    checkoutWithPaypalAccount();
+     //ensure that you are logged out to be able to register
+    String bodyText = driver.findElement(By.tagName("body")).getText();
+    if(bodyText.contains("LOG OUT")) {
+        retryingFindClick(driver.findElement(By.id("Logout")));
+        driver.get("http://localhost/cosc612projAkeeri/homeLandingPage.php");
+      } 
+    registerAccount();
   }
 
   @Test
   public void edgePairTestPath13(){
     //test path is [1,2,29,30,31,1,4,5,6,1]
+    logIn(driver);
+    searchForItem();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
   }
 
   @Test
-  public void edgePairTestPath14(){
+  public void edgePairTestPath14() throws InterruptedException {
     //test path is [1,2,29,30,31,1,3,24,25,26,27,28]
+    logIn(driver);
+    //ensure that you are logged out to be able to register
+    //pause test to log in to ensure that we can get to the cart
+    tearDown();
+    setUp();
+    String bodyText = driver.findElement(By.tagName("body")).getText();
+    if(bodyText.contains("LOG OUT")) {
+        retryingFindClick(driver.findElement(By.id("Logout")));
+        driver.get("http://localhost/cosc612projAkeeri/homeLandingPage.php");
+      } 
+    registerAccount();
   }
 
   @Test
   public void edgePairTestPath15(){
     //test path is [1,9,12,13,14,15,16,17,19,32,33,34,1,4,5,6,1]
+    //ensure that you are logged in and stuff is in the cart 
+    logIn(driver);
+    searchForItem();
+    addtoCart();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    //start test
+    driver.findElement(By.linkText("Cart")).click();
+    enterShippingInformation();
+    guestCheckout();
+    searchForItem();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
   }
 
   @Test
   public void edgePairTestPath16(){
     //test path is [1,9,12,13,14,15,16,17,19,32,33,34,1,3,24,25,26,27,28]
+    //ensure that you are logged in and stuff is in the cart 
+    logIn(driver);
+    searchForItem();
+    addtoCart();
+    retryingFindClick(driver.findElement(By.linkText("Home")));
+    //start test
+    driver.findElement(By.linkText("Cart")).click();
+    enterShippingInformation();
+    guestCheckout();
+    String bodyText = driver.findElement(By.tagName("body")).getText();
+    if(bodyText.contains("LOG OUT")) {
+        retryingFindClick(driver.findElement(By.id("Logout")));
+        driver.get("http://localhost/cosc612projAkeeri/homeLandingPage.php");
+      } 
+    registerAccount();
   }
 
     
@@ -515,6 +714,11 @@ public class AppTest {
     driver.findElement(By.name("activationCode")).click();
     driver.findElement(By.name("activationCode")).sendKeys("1234567890");
     driver.findElement(By.id("activateSubmit")).click();
+  }
+
+  public void removeItemInCart(){
+    Actions act =  new Actions(driver);
+    act.moveToElement(driver.findElement(By.cssSelector("tr:nth-child(2) button"))).click().perform();
   }
   
   public boolean retryingFindClick(WebElement webElement) {
