@@ -101,6 +101,10 @@ public class AppTest {
     enterShippingInformation();
     driver.findElement(By.id("displayShippingAddress")).click();
   }
+  @Test
+  public void registerAccountTest(){
+    registerAccount();
+  }
 
 
   //Start of Edge coverage test paths
